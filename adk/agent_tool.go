@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 
+	"code.byted.org/gopkg/logs/v2"
 	"github.com/bytedance/sonic"
 
 	"github.com/cloudwego/eino/components/tool"
@@ -170,9 +171,14 @@ func (at *agentTool) InvokableRun(ctx context.Context, argumentsInJSON string, o
 	}
 
 	var lastEvent *AgentEvent
+	logs.CtxInfo(ctx, "[agentTool] start iterating events for agent '%s'", at.agent.Name(ctx))
+	iterCount := 0
 	for {
 		event, ok := iter.Next()
+		iterCount++
+		logs.CtxInfo(ctx, "[agentTool] iter.Next() called, iterCount=%d, ok=%v, event=%+v", iterCount, ok, event)
 		if !ok {
+			logs.CtxInfo(ctx, "[agentTool] iter.Next() returned ok=false, breaking loop after %d iterations", iterCount)
 			break
 		}
 
