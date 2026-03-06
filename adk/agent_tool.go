@@ -176,9 +176,11 @@ func (at *agentTool) InvokableRun(ctx context.Context, argumentsInJSON string, o
 	for {
 		event, ok := iter.Next()
 		iterCount++
-		logs.CtxInfo(ctx, "[agentTool] iter.Next() called, iterCount=%d, ok=%v, event=%+v", iterCount, ok, event)
+		eventJSON, _ := sonic.MarshalString(event)
+		logs.CtxInfo(ctx, "[agentTool] iter.Next() called, iterCount=%d, ok=%v, event=%s", iterCount, ok, eventJSON)
 		if !ok {
-			logs.CtxInfo(ctx, "[agentTool] iter.Next() returned ok=false, breaking loop after %d iterations", iterCount)
+			lastEventJSON, _ := sonic.MarshalString(lastEvent)
+			logs.CtxInfo(ctx, "[agentTool] iter.Next() returned ok=false, breaking loop after %d iterations, lastEvent=%s", iterCount, lastEventJSON)
 			break
 		}
 
